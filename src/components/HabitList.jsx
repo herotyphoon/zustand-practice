@@ -1,4 +1,4 @@
-import { Box, Paper, GridLegacy, Typography, Button } from "@mui/material";
+import { Box, Paper, GridLegacy, Typography, Button, LinearProgress } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useHabitStore } from "../store/store.js";
@@ -7,6 +7,22 @@ export const HabitList = () => {
     const { habits, removeHabit, toggleHabit } = useHabitStore();
 
     const today = new Date().toISOString().split('T')[0];
+
+    const getStreak = (habit) => {
+        let streak = 0;
+        const currentDate = new Date();
+
+        while (true) {
+            const dateString = currentDate.toISOString().split('T')[0];
+            if (habit.completedDates.includes(dateString)) {
+                streak++;
+                currentDate.setDate(currentDate.getDate() - 1);
+            } else {
+                break;
+            }
+        }
+        return streak;
+    };
 
     return (
         <Box sx={{
@@ -40,6 +56,11 @@ export const HabitList = () => {
                                 </Box>
                             </GridLegacy>
                         </GridLegacy>
+
+                        <Box sx={{ mt: 2 }}>
+                            <Typography>Current Streak: {getStreak(habit)} days</Typography>
+                            <LinearProgress variant="determinate" value={getStreak(habit) / 30 * 100 } sx={{ mt: 1}} />
+                        </Box>
                     </Paper>
                 ))
             }
