@@ -5,6 +5,8 @@ export const useHabitStore = create(
     persist(
         (set, get) => ({
             habits: [],
+            isLoading: false,
+            error: null,
             addHabbit: (name, frequency) => {
                 set((state) => ({
                     habits: [
@@ -37,7 +39,41 @@ export const useHabitStore = create(
                     : habit
                 )}
                 )
-            )
+            ),
+            fetchHabits: async () => {
+                set({ isLoading: true });
+                try {
+
+                    const currentHabits = get().habits;
+                    if (currentHabits.length > 0) {
+                        set({ isLoading: false });
+                        return;
+                    }
+                    // Simulate API call
+                    await new Promise((resolve) =>
+                        setTimeout(() => resolve({ data: [] }), 1000)
+                    );
+                    const mockHabits = [
+                        {
+                            id: '1',
+                            name: 'Drink Water',
+                            frequency: 'Daily',
+                            completedDates: ['2024-06-01', '2024-06-02'],
+                            createdAt: '2024-06-01T00:00:00.000Z',
+                        },
+                        {
+                            id: '2',
+                            name: 'Exercise',
+                            frequency: 'Daily',
+                            completedDates: ['2024-06-01'],
+                            createdAt: '2024-06-01T00:00:00.000Z', 
+                        }
+                    ]
+                    set({ habits: mockHabits, isLoading: false });
+                } catch (error) {
+                    set({ error: 'Failed to fetch habits', isLoading: false });
+                }
+            }
         }
     ),
     {
