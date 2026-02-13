@@ -5,8 +5,8 @@ import { AddHabitForm } from './components/AddHabitForm.jsx';
 
 function App() {
 
-    // const habits = useHabitStore();
-    // console.log(habits);
+    const {habits} = useHabitStore();
+    console.log(habits);
 
   return (
     <Container>
